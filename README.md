@@ -113,18 +113,3 @@ services:
 docker-compose up -d
 ```
 
-## 浏览器支持
-
-- Chrome (最新版本)
-- Firefox (最新版本)
-- Safari (最新版本)
-- Edge (最新版本)
-
-## 许可证
-
-MIT License
-
-## 作者
-
-ColorOS Showcase Team
-
