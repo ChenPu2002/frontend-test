@@ -166,7 +166,12 @@ const technologies = ref([
   transform: translate(-50%, -50%);
   width: 800px;
   height: 800px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, 
+    rgba(255, 107, 107, 0.15) 0%,
+    rgba(254, 202, 87, 0.1) 25%, 
+    rgba(72, 219, 251, 0.1) 50%, 
+    rgba(255, 159, 243, 0.1) 75%, 
+    transparent 70%);
   border-radius: 50%;
   animation: pulse 4s ease-in-out infinite;
 }
@@ -192,11 +197,22 @@ const technologies = ref([
   font-size: 6rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 20%, #48dbfb 40%, #ff9ff3 60%, #54a0ff 80%, #5f27cd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
+  animation: gradient-shift 8s ease infinite;
+  background-size: 200% auto;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
 }
 
 .subtitle {
