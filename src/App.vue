@@ -1,23 +1,35 @@
 <template>
   <div class="app">
     <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-content">
-          <h1 class="title">ColorOS</h1>
-          <p class="subtitle">无边界的智能体验</p>
-          <p class="description">基于Android深度定制，为全球用户打造流畅、智能、个性化的操作系统</p>
-        </div>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="title">ColorOS</h1>
+        <p class="subtitle">无边界的智能体验</p>
+        <p class="description">基于Android深度定制，为全球用户打造流畅、智能、个性化的操作系统</p>
+        <ul class="hero-highlights">
+          <li
+            v-for="(highlight, index) in heroHighlights"
+            :key="highlight"
+            class="hero-highlight"
+            :style="{ animationDelay: index * 0.4 + 's' }"
+          >
+            {{ highlight }}
+          </li>
+        </ul>
       </div>
-      <div class="hero-decoration"></div>
-    </section>
+    </div>
+    <div class="hero-decoration"></div>
+    <div class="hero-aurora"></div>
+    <div class="hero-grid"></div>
+  </section>
 
     <!-- Features Section -->
     <section class="features">
-      <div class="container">
-        <h2 class="section-title">核心特性</h2>
-        <div class="features-grid">
-          <div class="feature-card" v-for="feature in features" :key="feature.title">
+        <div class="container">
+          <h2 class="section-title">核心特性</h2>
+          <div class="features-grid">
+            <div class="feature-card" v-for="feature in features" :key="feature.title">
             <div class="feature-icon">{{ feature.icon }}</div>
             <h3 class="feature-title">{{ feature.title }}</h3>
             <p class="feature-desc">{{ feature.description }}</p>
@@ -28,10 +40,10 @@
 
     <!-- Design Section -->
     <section class="design">
-      <div class="container">
-        <h2 class="section-title">设计理念</h2>
-        <div class="design-content">
-          <div class="design-item" v-for="item in designPrinciples" :key="item.title">
+        <div class="container">
+          <h2 class="section-title">设计理念</h2>
+          <div class="design-content">
+            <div class="design-item" v-for="item in designPrinciples" :key="item.title">
             <h3 class="design-title">{{ item.title }}</h3>
             <p class="design-desc">{{ item.description }}</p>
           </div>
@@ -41,10 +53,10 @@
 
     <!-- Technology Section -->
     <section class="technology">
-      <div class="container">
-        <h2 class="section-title">技术创新</h2>
-        <div class="tech-grid">
-          <div class="tech-card" v-for="tech in technologies" :key="tech.name">
+        <div class="container">
+          <h2 class="section-title">技术创新</h2>
+          <div class="tech-grid">
+            <div class="tech-card" v-for="tech in technologies" :key="tech.name">
             <div class="tech-badge">{{ tech.badge }}</div>
             <h3 class="tech-name">{{ tech.name }}</h3>
             <p class="tech-detail">{{ tech.detail }}</p>
@@ -64,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const features = ref([
   {
@@ -133,14 +145,95 @@ const technologies = ref([
   {
     badge: '安全',
     name: 'TEE安全芯片',
-    description: '硬件级加密保护，支付、隐私数据独立存储，安全无忧'
+    detail: '硬件级加密保护，支付、隐私数据独立存储，安全无忧'
   }
 ])
+
+const heroHighlights = ref([
+  '量子动画引擎 3.0',
+  '跨端无缝互联',
+  'AI 场景智能感知',
+  '系统级隐私防护'
+])
+
+let scrollObserver = null
+
+const animatedGroups = [
+  { selector: '.hero-content', delayStep: 0 },
+  { selector: '.hero-highlight', delayStep: 0.15 },
+  { selector: '.section-title', delayStep: 0 },
+  { selector: '.feature-card', delayStep: 0.08 },
+  { selector: '.design-item', delayStep: 0.1 },
+  { selector: '.tech-card', delayStep: 0.08 }
+]
+
+const revealElement = (entry, observer) => {
+  if (entry.isIntersecting) {
+    entry.target.classList.add('fade-up', 'is-visible')
+    observer.unobserve(entry.target)
+  }
+}
+
+const registerScrollAnimations = () => {
+  if (typeof window === 'undefined') return
+
+  const prefersReducedMotion = window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false
+  const elementsBySelector = animatedGroups.map(({ selector, delayStep }) => {
+    const nodes = Array.from(document.querySelectorAll(selector))
+    nodes.forEach((node, index) => {
+      node.classList.add('fade-up')
+      node.style.setProperty('--stagger', `${index * delayStep}s`)
+    })
+    return { nodes }
+  })
+
+  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+    elementsBySelector.forEach(({ nodes }) =>
+      nodes.forEach((node) => node.classList.add('is-visible'))
+    )
+    return
+  }
+
+  scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => revealElement(entry, scrollObserver))
+  }, {
+    threshold: 0.2,
+    rootMargin: '0px 0px -10% 0px'
+  })
+
+  elementsBySelector.forEach(({ nodes }) => {
+    nodes.forEach((node) => scrollObserver.observe(node))
+  })
+}
+
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  const schedule = window.requestAnimationFrame ?? window.setTimeout
+  schedule(() => registerScrollAnimations())
+})
+
+onBeforeUnmount(() => {
+  scrollObserver?.disconnect()
+})
 </script>
 
 <style scoped>
 .app {
   width: 100%;
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition-delay: var(--stagger, 0s);
+}
+
+.fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .container {
@@ -174,6 +267,32 @@ const technologies = ref([
     transparent 70%);
   border-radius: 50%;
   animation: pulse 4s ease-in-out infinite;
+  z-index: 0;
+}
+
+.hero-aurora,
+.hero-grid {
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-aurora {
+  background: radial-gradient(circle at 20% 20%, rgba(255, 107, 107, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(72, 219, 251, 0.15), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(95, 39, 205, 0.2), transparent 55%);
+  filter: blur(120px);
+  animation: aurora-flow 16s ease-in-out infinite alternate;
+  opacity: 0.6;
+}
+
+.hero-grid {
+  background-image: linear-gradient(transparent 95%, rgba(255, 255, 255, 0.05) 100%),
+    linear-gradient(90deg, transparent 95%, rgba(255, 255, 255, 0.05) 100%);
+  background-size: 140px 140px;
+  animation: grid-pan 22s linear infinite;
+  opacity: 0.1;
 }
 
 @keyframes pulse {
@@ -191,6 +310,47 @@ const technologies = ref([
   position: relative;
   z-index: 1;
   text-align: center;
+}
+
+.hero-highlights {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.hero-highlight {
+  padding: 0.5rem 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  animation: float-pill 6s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-highlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.25), transparent 70%);
+  transform: translateX(-100%);
+  animation: highlight-glint 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-highlight:nth-child(2n) {
+  animation-duration: 7s;
+}
+
+.hero-highlight:nth-child(3n) {
+  animation-duration: 5.5s;
 }
 
 .title {
@@ -257,12 +417,31 @@ const technologies = ref([
   padding: 2.5rem;
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .feature-card:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 20% 10%;
+  background: radial-gradient(circle, rgba(72, 219, 251, 0.25), transparent 70%);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .feature-icon {
@@ -301,6 +480,7 @@ const technologies = ref([
   border-left: 3px solid rgba(255, 255, 255, 0.3);
   padding-left: 2rem;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .design-item:hover {
@@ -340,6 +520,8 @@ const technologies = ref([
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  background-size: 180% 180%;
+  animation: gradient-flow 10s ease-in-out infinite alternate;
 }
 
 .tech-card::before {
@@ -358,11 +540,24 @@ const technologies = ref([
   transform: scaleX(1);
 }
 
+.tech-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.2), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
 .tech-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+.tech-card:hover::after {
+  opacity: 0.6;
+}
 .tech-badge {
   display: inline-block;
   background: rgba(255, 255, 255, 0.1);
@@ -426,6 +621,68 @@ const technologies = ref([
 
   .tech-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@keyframes aurora-flow {
+  0% {
+    transform: translate(-5%, -5%) scale(1);
+  }
+  100% {
+    transform: translate(5%, 5%) scale(1.1);
+  }
+}
+
+@keyframes grid-pan {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-70px, -70px, 0);
+  }
+}
+
+@keyframes float-pill {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes highlight-glint {
+  0%, 80% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .hero-highlight,
+  .hero-decoration,
+  .hero-aurora,
+  .hero-grid,
+  .title,
+  .tech-card {
+    animation: none !important;
   }
 }
 </style>
