@@ -1,23 +1,38 @@
 <template>
   <div class="app">
+    <!-- Floating Particles Background -->
+    <div class="particles">
+      <div class="particle" v-for="i in 20" :key="i" :style="getParticleStyle(i)"></div>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
         <div class="hero-content">
-          <h1 class="title">ColorOS</h1>
-          <p class="subtitle">无边界的智能体验</p>
-          <p class="description">基于Android深度定制，为全球用户打造流畅、智能、个性化的操作系统</p>
+          <h1 class="title fade-in-up">ColorOS</h1>
+          <p class="subtitle fade-in-up delay-1">无边界的智能体验</p>
+          <p class="description fade-in-up delay-2">基于Android深度定制，为全球用户打造流畅、智能、个性化的操作系统</p>
+          <div class="scroll-indicator fade-in-up delay-3">
+            <div class="scroll-arrow"></div>
+          </div>
         </div>
       </div>
       <div class="hero-decoration"></div>
+      <div class="hero-decoration-2"></div>
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section class="features" ref="featuresSection">
       <div class="container">
-        <h2 class="section-title">核心特性</h2>
+        <h2 class="section-title" :class="{ 'animate-in': featuresVisible }">核心特性</h2>
         <div class="features-grid">
-          <div class="feature-card" v-for="feature in features" :key="feature.title">
+          <div
+            class="feature-card"
+            v-for="(feature, index) in features"
+            :key="feature.title"
+            :class="{ 'animate-in': featuresVisible }"
+            :style="{ animationDelay: `${index * 0.1}s` }"
+          >
             <div class="feature-icon">{{ feature.icon }}</div>
             <h3 class="feature-title">{{ feature.title }}</h3>
             <p class="feature-desc">{{ feature.description }}</p>
@@ -27,11 +42,17 @@
     </section>
 
     <!-- Design Section -->
-    <section class="design">
+    <section class="design" ref="designSection">
       <div class="container">
-        <h2 class="section-title">设计理念</h2>
+        <h2 class="section-title" :class="{ 'animate-in': designVisible }">设计理念</h2>
         <div class="design-content">
-          <div class="design-item" v-for="item in designPrinciples" :key="item.title">
+          <div
+            class="design-item"
+            v-for="(item, index) in designPrinciples"
+            :key="item.title"
+            :class="{ 'animate-in': designVisible }"
+            :style="{ animationDelay: `${index * 0.15}s` }"
+          >
             <h3 class="design-title">{{ item.title }}</h3>
             <p class="design-desc">{{ item.description }}</p>
           </div>
@@ -40,14 +61,21 @@
     </section>
 
     <!-- Technology Section -->
-    <section class="technology">
+    <section class="technology" ref="techSection">
       <div class="container">
-        <h2 class="section-title">技术创新</h2>
+        <h2 class="section-title" :class="{ 'animate-in': techVisible }">技术创新</h2>
         <div class="tech-grid">
-          <div class="tech-card" v-for="tech in technologies" :key="tech.name">
+          <div
+            class="tech-card"
+            v-for="(tech, index) in technologies"
+            :key="tech.name"
+            :class="{ 'animate-in': techVisible }"
+            :style="{ animationDelay: `${index * 0.1}s` }"
+          >
             <div class="tech-badge">{{ tech.badge }}</div>
             <h3 class="tech-name">{{ tech.name }}</h3>
             <p class="tech-detail">{{ tech.detail }}</p>
+            <div class="tech-glow"></div>
           </div>
         </div>
       </div>
@@ -64,7 +92,58 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+
+// Intersection Observer for scroll animations
+const featuresSection = ref(null)
+const designSection = ref(null)
+const techSection = ref(null)
+const featuresVisible = ref(false)
+const designVisible = ref(false)
+const techVisible = ref(false)
+
+onMounted(() => {
+  const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px 0px -100px 0px'
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (entry.target === featuresSection.value) {
+          featuresVisible.value = true
+        } else if (entry.target === designSection.value) {
+          designVisible.value = true
+        } else if (entry.target === techSection.value) {
+          techVisible.value = true
+        }
+      }
+    })
+  }, observerOptions)
+
+  if (featuresSection.value) observer.observe(featuresSection.value)
+  if (designSection.value) observer.observe(designSection.value)
+  if (techSection.value) observer.observe(techSection.value)
+})
+
+// Particle animation styles
+const getParticleStyle = (index) => {
+  const size = Math.random() * 4 + 2
+  const duration = Math.random() * 20 + 10
+  const delay = Math.random() * 5
+  const xPos = Math.random() * 100
+  const opacity = Math.random() * 0.5 + 0.1
+
+  return {
+    width: `${size}px`,
+    height: `${size}px`,
+    left: `${xPos}%`,
+    animationDuration: `${duration}s`,
+    animationDelay: `${delay}s`,
+    opacity: opacity
+  }
+}
 
 const features = ref([
   {
@@ -141,12 +220,128 @@ const technologies = ref([
 <style scoped>
 .app {
   width: 100%;
+  position: relative;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* Floating Particles */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%);
+  border-radius: 50%;
+  animation: float linear infinite;
+  bottom: -10px;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Fade In Up Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 1s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-1 {
+  animation-delay: 0.2s;
+}
+
+.delay-2 {
+  animation-delay: 0.4s;
+}
+
+.delay-3 {
+  animation-delay: 0.6s;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.scroll-arrow {
+  width: 30px;
+  height: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 25px;
+  position: relative;
+  animation: scroll-bounce 2s infinite;
+}
+
+.scroll-arrow::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: scroll-move 2s infinite;
+}
+
+@keyframes scroll-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+@keyframes scroll-move {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
 }
 
 /* Hero Section */
@@ -166,14 +361,28 @@ const technologies = ref([
   transform: translate(-50%, -50%);
   width: 800px;
   height: 800px;
-  background: radial-gradient(circle, 
+  background: radial-gradient(circle,
     rgba(255, 107, 107, 0.15) 0%,
-    rgba(254, 202, 87, 0.1) 25%, 
-    rgba(72, 219, 251, 0.1) 50%, 
-    rgba(255, 159, 243, 0.1) 75%, 
+    rgba(254, 202, 87, 0.1) 25%,
+    rgba(72, 219, 251, 0.1) 50%,
+    rgba(255, 159, 243, 0.1) 75%,
     transparent 70%);
   border-radius: 50%;
   animation: pulse 4s ease-in-out infinite;
+}
+
+.hero-decoration-2 {
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(59, 130, 246, 0.05) 50%,
+    transparent 70%);
+  border-radius: 50%;
+  animation: pulse-reverse 6s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -184,6 +393,17 @@ const technologies = ref([
   50% {
     transform: translate(-50%, -50%) scale(1.1);
     opacity: 0.8;
+  }
+}
+
+@keyframes pulse-reverse {
+  0%, 100% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.6;
   }
 }
 
@@ -242,6 +462,14 @@ const technologies = ref([
   margin-bottom: 4rem;
   font-weight: 600;
   color: #ffffff;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.section-title.animate-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .features-grid {
@@ -255,20 +483,40 @@ const technologies = ref([
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.feature-card.animate-in {
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .feature-card:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .feature-icon {
   font-size: 3rem;
   margin-bottom: 1.5rem;
   display: inline-block;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.2) rotate(5deg);
 }
 
 .feature-title {
@@ -300,11 +548,26 @@ const technologies = ref([
 .design-item {
   border-left: 3px solid rgba(255, 255, 255, 0.3);
   padding-left: 2rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.design-item.animate-in {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .design-item:hover {
   border-left-color: #ffffff;
+  transform: translateX(10px);
+  padding-left: 2.5rem;
 }
 
 .design-title {
@@ -337,9 +600,22 @@ const technologies = ref([
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.tech-card.animate-in {
+  animation: scaleIn 0.6s ease-out forwards;
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .tech-card::before {
@@ -351,16 +627,34 @@ const technologies = ref([
   height: 3px;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transform-origin: left;
+  transition: transform 0.5s ease;
 }
 
 .tech-card:hover::before {
   transform: scaleX(1);
 }
 
+.tech-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+
 .tech-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px) scale(1.02);
   border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+}
+
+.tech-card:hover .tech-glow {
+  transform: translate(-50%, -50%) scale(1.5);
 }
 
 .tech-badge {
