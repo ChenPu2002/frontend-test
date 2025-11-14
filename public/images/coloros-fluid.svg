@@ -1,0 +1,42 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ColorOS 界面抽象插画">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="cardA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b6b" />
+      <stop offset="100%" stop-color="#feca57" />
+    </linearGradient>
+    <linearGradient id="cardB" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#48dbfb" />
+      <stop offset="100%" stop-color="#5f27cd" />
+    </linearGradient>
+    <linearGradient id="cardC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f5a0" />
+      <stop offset="100%" stop-color="#00d9f5" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="30" stdDeviation="40" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)" />
+  <circle cx="300" cy="120" r="220" fill="rgba(255,255,255,0.05)" />
+  <circle cx="920" cy="680" r="240" fill="rgba(255,255,255,0.03)" />
+  <rect x="240" y="180" width="720" height="440" rx="40" fill="#0b1324" stroke="rgba(255,255,255,0.08)" stroke-width="1" filter="url(#shadow)" />
+  <rect x="300" y="240" width="260" height="320" rx="28" fill="url(#cardA)" opacity="0.95" />
+  <rect x="580" y="240" width="320" height="180" rx="28" fill="url(#cardB)" opacity="0.9" />
+  <rect x="580" y="440" width="320" height="120" rx="28" fill="url(#cardC)" opacity="0.9" />
+  <circle cx="360" cy="300" r="28" fill="#ffffff" opacity="0.9" />
+  <rect x="410" y="276" width="120" height="12" rx="6" fill="#ffffff" opacity="0.85" />
+  <rect x="410" y="300" width="96" height="12" rx="6" fill="#ffffff" opacity="0.5" />
+  <rect x="410" y="324" width="140" height="12" rx="6" fill="#ffffff" opacity="0.35" />
+  <rect x="620" y="280" width="120" height="12" rx="6" fill="#ffffff" opacity="0.85" />
+  <rect x="620" y="304" width="220" height="12" rx="6" fill="#ffffff" opacity="0.5" />
+  <rect x="620" y="328" width="180" height="12" rx="6" fill="#ffffff" opacity="0.35" />
+  <rect x="620" y="476" width="168" height="12" rx="6" fill="#ffffff" opacity="0.85" />
+  <rect x="620" y="500" width="120" height="12" rx="6" fill="#ffffff" opacity="0.5" />
+  <rect x="620" y="524" width="200" height="12" rx="6" fill="#ffffff" opacity="0.35" />
+  <text x="300" y="560" fill="#94a3b8" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" opacity="0.9">ColorOS · Fluid Design</text>
+</svg>

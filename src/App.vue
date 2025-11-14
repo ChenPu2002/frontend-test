@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+    <div class="app">
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
@@ -11,6 +11,28 @@
       </div>
       <div class="hero-decoration"></div>
     </section>
+
+      <!-- Showcase Section -->
+      <section class="showcase">
+        <div class="container">
+          <div class="section-heading">
+            <h2 class="section-title">视觉赏析</h2>
+            <p class="section-subtitle">近距离感受 ColorOS 与 OPPO 旗舰设备的美学与质感</p>
+          </div>
+          <div class="showcase-grid">
+            <article class="showcase-card" v-for="item in showcases" :key="item.title">
+              <div class="showcase-media">
+                <img :src="item.image" :alt="item.title" loading="lazy" decoding="async" />
+              </div>
+              <div class="showcase-info">
+                <span class="showcase-tag">{{ item.tag }}</span>
+                <h3 class="showcase-title">{{ item.title }}</h3>
+                <p class="showcase-desc">{{ item.description }}</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
 
     <!-- Features Section -->
     <section class="features">
@@ -65,6 +87,27 @@
 
 <script setup>
 import { ref } from 'vue'
+
+const showcases = ref([
+  {
+    tag: 'ColorOS 14',
+    title: '流动的多彩界面',
+    description: '全新 Aquamorphic Design 以自然色彩与柔和光感打造沉浸式视觉体验。',
+    image: '/images/coloros-fluid.svg'
+  },
+  {
+    tag: 'OPPO Find X',
+    title: '旗舰级机身工艺',
+    description: '镜月弧线与纳米微晶陶瓷工艺，呈现 Find X 系列的高端质感与握持舒适度。',
+    image: '/images/oppo-device-stack.svg'
+  },
+  {
+    tag: '跨设备协同',
+    title: 'ColorOS 超融合体验',
+    description: '手机、平板、手表一体化协同，文件与通话一拖即连，效率倍增。',
+    image: '/images/coloros-multidevice.svg'
+  }
+])
 
 const features = ref([
   {
@@ -133,7 +176,7 @@ const technologies = ref([
   {
     badge: '安全',
     name: 'TEE安全芯片',
-    description: '硬件级加密保护，支付、隐私数据独立存储，安全无忧'
+    detail: '硬件级加密保护，支付、隐私数据独立存储，安全无忧'
   }
 ])
 </script>
@@ -230,18 +273,103 @@ const technologies = ref([
   line-height: 1.8;
 }
 
-/* Features Section */
-.features {
-  padding: 120px 0;
-  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+.section-heading {
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
 .section-title {
   font-size: 3rem;
-  text-align: center;
-  margin-bottom: 4rem;
   font-weight: 600;
   color: #ffffff;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-subtitle {
+  color: #b0b0b0;
+  font-size: 1.125rem;
+  max-width: 640px;
+  margin: 1rem auto 0;
+  line-height: 1.7;
+}
+
+/* Showcase Section */
+.showcase {
+  padding: 120px 0;
+  background: radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 45%), #050505;
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.showcase-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+}
+
+.showcase-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.showcase-media {
+  position: relative;
+  padding-bottom: 62%;
+  overflow: hidden;
+}
+
+.showcase-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.showcase-info {
+  padding: 2rem;
+}
+
+.showcase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  color: #f4f4f4;
+  margin-bottom: 1rem;
+}
+
+.showcase-title {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.showcase-desc {
+  color: #b0b0b0;
+  line-height: 1.8;
+}
+
+/* Features Section */
+.features {
+  padding: 120px 0;
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
 }
 
 .features-grid {
@@ -418,6 +546,14 @@ const technologies = ref([
 
   .section-title {
     font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .showcase-grid {
+    grid-template-columns: 1fr;
   }
 
   .features-grid {
