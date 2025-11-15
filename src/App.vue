@@ -426,9 +426,9 @@ const technologies = ref([
     #00d2d3 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
-  background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  background-clip: text;
+  color: #ffffff;
   letter-spacing: -0.02em;
   animation: gradient-shift 8s ease infinite;
   display: inline-block;
