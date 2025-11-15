@@ -417,6 +417,10 @@ const technologies = ref([
   font-size: 6rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  display: inline-block;
+  will-change: background-position;
   background: linear-gradient(135deg,
     #ff6b6b 0%,
     #feca57 20%,
@@ -425,14 +429,15 @@ const technologies = ref([
     #54a0ff 80%,
     #00d2d3 100%);
   background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: #ffffff;
-  letter-spacing: -0.02em;
   animation: gradient-shift 8s ease infinite;
-  display: inline-block;
-  will-change: background-position;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .title {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 @keyframes gradient-shift {
