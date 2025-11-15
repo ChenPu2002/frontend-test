@@ -431,7 +431,6 @@ const technologies = ref([
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  color: #ffffff;
   animation: gradient-shift 8s ease infinite;
 }
 
