@@ -427,9 +427,11 @@ const technologies = ref([
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
   letter-spacing: -0.02em;
   animation: gradient-shift 8s ease infinite;
   background-size: 200% 200%;
+  display: inline-block;
 }
 
 @keyframes gradient-shift {
